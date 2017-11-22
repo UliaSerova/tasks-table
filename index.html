@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Задачи</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
+</head>
+<style>
+    .sortorder:after {
+        content: '\25b2';
+    }
+    .red {
+        color: red;
+    }
+</style>
+<body ng-controller="tableController">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-12">
+                <form name="addForm">
+                    <h1 ng-hide="editingTable">Создать</h1>
+                    <h1 ng-show="editingTable">Редактировать</h1>
+                    <!-- название -->
+                    <div class="form-group">
+                        <label>Название задачи:</label>
+                        <input type="text" class="form-control" name="name" ng-model="newTask.name" required placeholder="Введите название задачи">
+                    </div>
+                    <!-- Описание -->
+                    <div class="form-group">
+                        <label>Описание задачи:</label>
+                        <textarea class="form-control" rows="5" name="desc" ng-model="newTask.desc" required placeholder="Введите описание задачи"></textarea>
+                    </div>
+                    <!-- Исполнитель -->
+                    <label>Исполнитель:</label>
+                    <div class="form-group">
+                        <select ng-model="newTask.performer" name="performer" ng-options="performer.text for performer in performers" required>
+                        </select>
+                    </div>
+                    <!-- Отправить -->
+                    <button type="button"
+                            class="btn btn-primary"
+                            ng-hide="editingTable"
+                            ng-disabled="!newTask.name || !newTask.desc || !newTask.performer"
+                            ng-click="addItem(newTask, addForm)">Создать</button>
+                    <button type="button"
+                            class="btn btn-primary"
+                            ng-show="editingTable"
+                            ng-disabled="!newTask.name || !newTask.desc || !newTask.performer"
+                            ng-click="reloadItem(newTask, addForm)">Сохранить</button>
+                    <button type="button"
+                            class="btn btn-primary"
+                            ng-show="editingTable"
+                            ng-click="canselItem()">Отмена</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-12 block">
+                <hr>
+                <h2>Список задач</h2>
+                <span class="ng-hide red" ng-show="errorAdit">Выберите одно значение</span>
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>№</th>
+                        <th>
+                            <button class="btn btn-link" ng-click='sortBy("name")'>Название</button>
+                            <span class="sortorder ng-hide" ng-show="propertyName === 'name'" ng-class="{reverse: reverse}"></span>
+                        </th>
+                        <th>
+                            <button class="btn btn-link" ng-click='sortBy("desc")'>Описание</button>
+                            <span class="sortorder ng-hide" ng-show="propertyName === 'desc'" ng-class="{reverse: reverse}"></span>
+                        </th>
+                        <th>
+                            <button class="btn btn-link" ng-click='sortBy("performer")'>Исполнитель</button>
+                            <span class="sortorder ng-hide" ng-show="propertyName === 'performer'" ng-class="{reverse: reverse}"></span>
+                        </th>
+                        <th>
+                            <button class="btn btn-link" ng-click='sortBy("status")'>Статус</button>
+                            <span class="sortorder ng-hide" ng-show="propertyName === 'status'" ng-class="{reverse: reverse}"></span>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="task in tasks track by $index">
+                        <td><input type="checkbox" ng-model="task.check"></td>
+                        <td>{{$index + 1}}</td>
+                        <td>{{task.name}}</td>
+                        <td>{{task.desc}}</td>
+                        <td>{{task.performer.text}}</td>
+                        <td>{{task.status ? "Выполнено" : "Не выполнено"}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="form-group">
+
+                    <button type="button"
+                            class="btn btn-primary"
+                            ng-click="deleteItem()">Удалить</button>
+                    <button type="button"
+                            class="btn btn-primary"
+                            ng-click="aditItem()">Редактировать</button>
+                    <button class="btn btn-primary" ng-click='itemMade(task)'>Выполнено</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
